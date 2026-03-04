@@ -1,14 +1,14 @@
 services:
-  {your-containername}:
-    image: ghcr.io/{your-github-name}/{your-image}:latest
+  cicdexample:
+    image: ghcr.io/misopates/cicdexample:latest
     restart: unless-stopped
     ports:
      - 8001:8001
-
+         
     labels:
       com.centurylinklabs.watchtower.enable: "true"
     healthcheck:
-      test: ["CMD", "dotnet", "{Your-Entypoint.dll}"]
+      test: ["CMD", "dotnet", "CiCd.Gui.dll"]
       interval: 30s
       timeout: 3s
       retries: 3
@@ -17,8 +17,13 @@ services:
     image: nickfedor/watchtower
     restart: unless-stopped
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock #for at skire at den samme version er både ud og indenfor docker
     environment:
       WATCHTOWER_POLL_INTERVAL: 30
-      WATCHTOWER_CLEANUP: "true"
-    command: --label-enable
+      WATCHTOWER_CLEANUP: "true" #sletter gamle images efter opdatering hver gang så disk ikke fyldes op
+    command: --label-enable #henviser til labels oven for. og det er kun dem der har labels: "true". 
+    #kun køre watchtower på de container vi har valgt. 
+    # Så fx SQL server og andre ikke bliver opdateret uden vi ved det.
+
+
+    # brug ikke chatGPT til at finde watchtower den har githob lukket for og lavet deres egen. 
